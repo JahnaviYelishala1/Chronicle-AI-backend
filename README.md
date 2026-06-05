@@ -121,6 +121,49 @@ The API will be available at `http://localhost:8000`
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
+## Deploying on Render
+
+This repo includes a `render.yaml` blueprint and `.python-version` pin for Render.
+
+### Option 1: Blueprint Deploy
+1. Push this repository to GitHub/GitLab/Bitbucket.
+2. In Render, choose **New > Blueprint**.
+3. Select this repository.
+4. Render will detect `render.yaml` and create the web service.
+5. Add the required secret environment variables when prompted.
+
+### Option 2: Manual Web Service
+Use these settings if you create the service manually:
+
+```text
+Runtime: Python 3
+Build Command: pip install --upgrade pip && pip install -r requirements.txt
+Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+Health Check Path: /
+```
+
+### Render Environment Variables
+Set these in the Render service environment:
+
+```text
+DATABASE_URL=your_postgres_or_supabase_database_url
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_KEY=your_supabase_service_role_key
+SUPABASE_BUCKET=your_supabase_storage_bucket
+OPENROUTER_API_KEY=your_openrouter_key
+OPENROUTER_MODEL=google/gemma-4-31b-it:free
+CORS_ORIGINS=https://your-frontend-domain.com,http://localhost:5173
+```
+
+After deploy, open:
+
+```text
+https://your-render-service.onrender.com/
+https://your-render-service.onrender.com/docs
+```
+
+Note: Render's filesystem is ephemeral. Keep uploaded/transcribed assets in Supabase Storage or add a Render persistent disk if you need local files to survive deploys/restarts.
+
 ## API Endpoints
 
 ### Transcription
