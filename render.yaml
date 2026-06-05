@@ -5,7 +5,9 @@ services:
     plan: free
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /
+    preDeployCommand: python scripts/validate_startup.py
+    healthCheckPath: /health
+    healthCheckTimeout: 30
     envVars:
       - key: DATABASE_URL
         sync: false
@@ -21,3 +23,5 @@ services:
         value: google/gemma-4-31b-it:free
       - key: CORS_ORIGINS
         value: http://localhost:5173
+      - key: LOG_LEVEL
+        value: info
